@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💘 Valentinstag</title>
+
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at top, #ffb3c6, #590d22);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* LOGIN */
+#login {
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(12px);
+    padding: 35px 25px;
+    border-radius: 25px;
+    text-align: center;
+    color: white;
+    width: 90%;
+    max-width: 360px;
+}
+
+#login input {
+    width: 80%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    margin-top: 15px;
+    font-size: 16px;
+    text-align: center;
+}
+
+#login button {
+    margin-top: 15px;
+    padding: 12px 20px;
+    font-size: 18px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg,#ff4d6d,#ff758f);
+    color:white;
+}
+
+#error {
+    margin-top: 10px;
+    color: #ffccd5;
+}
+
+/* SHAKE */
+.shake {
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    50% { transform: translateX(8px); }
+    75% { transform: translateX(-6px); }
+    100% { transform: translateX(0); }
+}
+
+/* MAIN */
+#main {
+    display: none;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(18px);
+    border-radius: 30px;
+    padding: 30px 25px 40px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+}
+
+h1 {
+    color: white;
+    font-size: 26px;
+    margin-bottom: 15px;
+}
+
+/* SLIDESHOW */
+.slideshow {
+    width: 100%;
+    height: 220px;
+    margin-bottom: 15px;
+}
+
+.slideshow img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 22px;
+    display: none;
+}
+
+.slideshow img.active {
+    display: block;
+}
+
+/* BUTTONS */
+.buttons {
+    position: relative;
+    height: 120px;
+}
+
+button {
+    font-size: 18px;
+    padding: 15px 32px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+}
+
+#yes {
+    background: linear-gradient(135deg,#ff4d6d,#ff758f);
+    color:white;
+}
+
+#no {
+    background: rgba(255,255,255,0.4);
+    position: absolute;
+}
+
+/* LETTER */
+#letter {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+#letter .content {
+    background: white;
+    max-width: 360px;
+    padding: 30px 25px;
+    border-radius: 24px;
+}
+
+#letter h2 {
+    text-align:center;
+    color:#ff4d6d;
+    margin-bottom:15px;
+}
+
+#letter p {
+    font-size:16px;
+    line-height:1.6;
+    color:#333;
+}
+
+#letter button {
+    margin-top:20px;
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:none;
+    background:#ff4d6d;
+    color:white;
+    font-size:16px;
+}
+
+/* HEARTS */
+.heart {
+    position: fixed;
+    font-size: 22px;
+    animation: floatUp 5s linear forwards;
+    pointer-events: none;
+}
+
+@keyframes floatUp {
+    from { transform: translateY(0); opacity:1; }
+    to { transform: translateY(-700px); opacity:0; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+    <h2>🔐 Geheimcode</h2>
+    <p>Nur für meine Freundin 💕</p>
+    <input type="password" id="codeInput" placeholder="Code…">
+    <br>
+    <button onclick="checkCode()">Öffnen</button>
+    <p id="error"></p>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+    <h1>Willst du mein Valentinstags-Date sein? 💖</h1>
+
+    <div class="slideshow">
+        <img src="wir1.jpg" class="active">
+        <img src="wir2.jpg">
+        <img src="wir3.jpg">
+    </div>
+
+    <div class="buttons">
+        <button id="yes" onclick="yesClicked()">JA 💘</button>
+        <button id="no" onmouseover="moveNo()">NEIN 😅</button>
+    </div>
+</div>
+
+<!-- LETTER -->
+<div id="letter">
+    <div class="content">
+        <h2>Mein Liebesbrief 💌</h2>
+        <p>
+            Seitdem du in meinem Leben bist, fühlt sich alles leichter an.  
+            Du bist mein Lieblingsmensch ❤️
+        </p>
+        <p style="text-align:right;">Dein ❤️</p>
+        <button onclick="closeLetter()">🥰 Schließen</button>
+    </div>
+</div>
+
+<script>
+const SECRET_CODE = "21.08.2022";
+
+/* LOGIN */
+function checkCode(){
+    const input = document.getElementById("codeInput");
+    const login = document.getElementById("login");
+    const error = document.getElementById("error");
+
+    if(input.value === SECRET_CODE){
+        login.style.display="none";
+        document.getElementById("main").style.display="block";
+    } else {
+        error.innerHTML = "Du bist nicht meine Freundin 😈";
+
+        if(navigator.vibrate){
+            navigator.vibrate([120,80,120]);
+        }
+
+        login.classList.remove("shake");
+        void login.offsetWidth;
+        login.classList.add("shake");
+    }
+}
+
+/* SLIDESHOW */
+const imgs = document.querySelectorAll(".slideshow img");
+let i = 0;
+setInterval(()=>{
+    imgs[i].classList.remove("active");
+    i = (i+1) % imgs.length;
+    imgs[i].classList.add("active");
+},3000);
+
+/* NO BUTTON */
+const noBtn = document.getElementById("no");
+function moveNo(){
+    const area = document.querySelector(".buttons");
+    const maxX = area.offsetWidth - noBtn.offsetWidth;
+    const maxY = area.offsetHeight - noBtn.offsetHeight;
+    noBtn.style.left = Math.random()*maxX+"px";
+    noBtn.style.top = Math.random()*maxY+"px";
+}
+
+/* YES */
+function yesClicked(){
+    document.getElementById("letter").style.display="flex";
+    setInterval(createHeart,300);
+}
+
+function closeLetter(){
+    document.getElementById("letter").style.display="none";
+}
+
+/* HEARTS */
+function createHeart(){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*window.innerWidth+"px";
+    h.style.bottom="-20px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),5000);
+}
+</script>
+
+</body>
+</html>
